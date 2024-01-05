@@ -53,6 +53,7 @@
 #include "G4NuclearStopping.hh" //
 #include "G4BinaryLightIonReaction.hh"
 #include "G4CrossSectionInelastic.hh"
+#include "G4CrossSectionElastic.hh"
 #include "G4ComponentGGNuclNuclXsc.hh"
 #include "G4HadronElastic.hh"
 
@@ -284,45 +285,77 @@ void PhysicsList::ConstructProcess()
             // ----------------------------------------------------------------
 
             // inelastic
-            G4HadronInelasticProcess* alphaInelasticProcess = new G4HadronInelasticProcess("AlphaInelastic", G4Alpha::Alpha());
-            //alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GlauberGribovCrossSection"));
-            alphaInelasticProcess->AddDataSet(new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc())); // like FTFP-BERT, QGSP-BERT
-            // alphaInelasticProcess->AddDataSet(new G4ParticleInelasticXS(G4Alpha::Definition())); // like QBBC
-            //alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GGNuclNuclCrossSection"));
+            /* process */
+            G4HadronInelasticProcess* theAlphaInelasticProcess = new G4HadronInelasticProcess("AlphaInelastic", G4Alpha::Alpha());
+            /* cross section */
+            G4CrossSectionInelastic* theAlphaInelasticCrossSection = new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc()); // like FTFP-BERT, QGSP-BERT
+            // G4ParticleInelasticXS* theAlphaInelasticCrossSection = new articleInelasticXS(G4Alpha::Definition()); // like QBBC
+            // G4VCrossSectionDataSet* theAlphaInelasticCrossSection = new G4VCrossSectionDataSet("G4GGNuclNuclCrossSection");
+            theAlphaInelasticCrossSection->SetMinKinEnergy(0.*eV);
+            theAlphaInelasticCrossSection->SetMaxKinEnergy(25.6*PeV);
+            theAlphaInelasticProcess->AddDataSet(theAlphaInelasticCrossSection);
+            /* model */
             G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction();
             theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
             theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
-            alphaInelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
+            theAlphaInelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
             
             // elastic
-            G4HadronElasticProcess* alphaElasticProcess = new G4HadronElasticProcess("hadElastic");
-            alphaElasticProcess->AddDataSet(new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc())); // like QBBC, FTFP-BERT, QGSP-BERT
-            alphaElasticProcess->RegisterMe(new G4HadronElastic("hElasticLHEP")); // // like QBBC, FTFP-BERT, QGSP-BERT
+            /* process */
+            G4HadronElasticProcess* theAlphaElasticProcess = new G4HadronElasticProcess("hadElastic");
+            /* cross section */
+            G4CrossSectionElastic* theAlphaElasticCrossSection = new G4CrossSectionElastic(new G4ComponentGGNuclNuclXsc());
+            theAlphaElasticCrossSection->SetMinKinEnergy(0.*eV);
+            theAlphaElasticCrossSection->SetMaxKinEnergy(25.6*PeV);
+            theAlphaElasticProcess->AddDataSet(theAlphaElasticCrossSection);
+            /* model */
+            G4HadronElastic* theAlphaElasticModel = new G4HadronElastic("hElasticLHEP");
+            theAlphaElasticModel->SetMinEnergy(0.*eV);
+            theAlphaElasticModel->SetMaxEnergy(6.*GeV);
+            theAlphaElasticProcess->RegisterMe(theAlphaElasticModel);
 
             //
             G4ProcessManager* alphaProcessManager = G4Alpha::Alpha()->GetProcessManager();
-            alphaProcessManager->AddDiscreteProcess(alphaElasticProcess);
-            alphaProcessManager->AddDiscreteProcess(alphaInelasticProcess);
+            alphaProcessManager->AddDiscreteProcess(theAlphaElasticProcess);
+            alphaProcessManager->AddDiscreteProcess(theAlphaInelasticProcess);
         }
         else if (particleName == "He3")
         {
+            // Hadron components 
+            // ----------------------------------------------------------------
+
             // inelastic
-            G4HadronInelasticProcess* He3InelasticProcess = new G4HadronInelasticProcess("He3Inelastic", G4He3::He3()); // *** process ***
-            G4CrossSectionInelastic* theHe3InelasticCrossSection = new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc()); // *** cross section ***
+            /* process */
+            G4HadronInelasticProcess* theHe3InelasticProcess = new G4HadronInelasticProcess("He3Inelastic", G4He3::He3());
+            /* cross section */
+            G4CrossSectionInelastic* theHe3InelasticCrossSection = new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc());
             theHe3InelasticCrossSection->SetMinKinEnergy(0.*eV);
             theHe3InelasticCrossSection->SetMaxKinEnergy(25.6*PeV);
-            He3InelasticProcess->AddDataSet(theHe3InelasticCrossSection); // like FTFP-BERT, QGSP-BERT
-            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction(); // *** model ***
+            theHe3InelasticProcess->AddDataSet(theHe3InelasticCrossSection); // like FTFP-BERT, QGSP-BERT
+            /* model */
+            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction();
             theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
             theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
-            He3InelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
+            theHe3InelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
 
             // elastic
+            /* process */
+            G4HadronElasticProcess* theHe3ElasticProcess = new G4HadronElasticProcess("hadElastic");
+            /* cross section */
+            G4CrossSectionElastic* theHe3ElasticCrossSection = new G4CrossSectionElastic(new G4ComponentGGNuclNuclXsc());
+            theHe3ElasticCrossSection->SetMinKinEnergy(0.*eV);
+            theHe3ElasticCrossSection->SetMaxKinEnergy(25.6*PeV);
+            theHe3ElasticProcess->AddDataSet(theHe3ElasticCrossSection);
+            /* model */
+            G4HadronElastic* theHe3ElasticModel = new G4HadronElastic("hElasticLHEP");
+            theHe3ElasticModel->SetMinEnergy(0.*eV);
+            theHe3ElasticModel->SetMaxEnergy(100.*TeV);
+            theHe3ElasticProcess->RegisterMe(theHe3ElasticModel);
 
             //
             G4ProcessManager* He3ProcessManager = G4He3::He3()->GetProcessManager();
-            He3ProcessManager->AddDiscreteProcess(He3InelasticProcess);
-
+            He3ProcessManager->AddDiscreteProcess(theHe3ElasticProcess);
+            He3ProcessManager->AddDiscreteProcess(theHe3InelasticProcess);
         }
         else if (particleName == "GenericIon")
         {
