@@ -295,10 +295,10 @@ void PhysicsList::ConstructProcess()
             theAlphaInelasticCrossSection->SetMaxKinEnergy(25.6*PeV);
             theAlphaInelasticProcess->AddDataSet(theAlphaInelasticCrossSection);
             /* model */
-            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction();
-            theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
-            theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
-            theAlphaInelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
+            G4BinaryLightIonReaction* theAlphaInelasticModel = new G4BinaryLightIonReaction();
+            theAlphaInelasticModel->SetMinEnergy(0.*eV);
+            theAlphaInelasticModel->SetMaxEnergy(6.*GeV);
+            theAlphaInelasticProcess->RegisterMe(theAlphaInelasticModel);
             
             // elastic
             /* process */
@@ -333,10 +333,10 @@ void PhysicsList::ConstructProcess()
             theHe3InelasticCrossSection->SetMaxKinEnergy(25.6*PeV);
             theHe3InelasticProcess->AddDataSet(theHe3InelasticCrossSection); // like FTFP-BERT, QGSP-BERT
             /* model */
-            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction();
-            theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
-            theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
-            theHe3InelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
+            G4BinaryLightIonReaction* theHe3InelasticModel = new G4BinaryLightIonReaction();
+            theHe3InelasticModel->SetMinEnergy(0.*eV);
+            theHe3InelasticModel->SetMaxEnergy(6.*GeV);
+            theHe3InelasticProcess->RegisterMe(theHe3InelasticModel);
 
             // elastic
             /* process */
