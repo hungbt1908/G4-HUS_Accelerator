@@ -47,10 +47,7 @@
 #include "G4hBremsstrahlung.hh"
 #include "G4hPairProduction.hh"
 #include "G4CoulombScattering.hh"
-// --- alpha & He3 ---
-#include "G4hMultipleScattering.hh"
-#include "G4ionIonisation.hh"
-#include "G4NuclearStopping.hh"
+
 /// --- ions ---
 #include "G4hMultipleScattering.hh"
 #include "G4IonParametrisedLossModel.hh"

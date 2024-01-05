@@ -48,7 +48,16 @@
 #include "G4FTFModel.hh"
 
 // alpha
+#include "G4hMultipleScattering.hh" //
+#include "G4ionIonisation.hh" //
+#include "G4NuclearStopping.hh" //
 #include "G4BinaryLightIonReaction.hh"
+#include "G4CrossSectionInelastic.hh"
+#include "G4ComponentGGNuclNuclXsc.hh"
+#include "G4HadronElastic.hh"
+
+// He3
+//#include "G4GGNuclNuclCrossSection.hh"
 
 #include "G4HadronicParameters.hh"
 
@@ -266,7 +275,7 @@ void PhysicsList::ConstructProcess()
             // EM components
             // ----------------------------------------------------------------
 
-            //
+            // EM components
             ph->RegisterProcess(new G4hMultipleScattering, particle);
             ph->RegisterProcess(new G4ionIonisation, particle);
             ph->RegisterProcess(new G4NuclearStopping, particle);
@@ -276,23 +285,44 @@ void PhysicsList::ConstructProcess()
 
             // inelastic
             G4HadronInelasticProcess* alphaInelasticProcess = new G4HadronInelasticProcess("AlphaInelastic", G4Alpha::Alpha());
-            alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GlauberGribovCrossSection"));
-            alphaInelasticProcess->RegisterMe(new G4BinaryLightIonReaction());
+            //alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GlauberGribovCrossSection"));
+            alphaInelasticProcess->AddDataSet(new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc())); // like FTFP-BERT, QGSP-BERT
             // alphaInelasticProcess->AddDataSet(new G4ParticleInelasticXS(G4Alpha::Definition())); // like QBBC
+            //alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GGNuclNuclCrossSection"));
+            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction();
+            theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
+            theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
+            alphaInelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
             
-            // i
-            G4HadronElasticProcess* alphaElasticProcess = new G4HadronElasticProcess("AlphaElastic");
-            alphaElasticProcess->AddDataSet(new G4VCrossSectionDataSet("G4GlauberGribovCrossSection"));
-            alphaElasticProcess->RegisterMe(new G4ChipsElasticModel());
+            // elastic
+            G4HadronElasticProcess* alphaElasticProcess = new G4HadronElasticProcess("hadElastic");
+            alphaElasticProcess->AddDataSet(new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc())); // like QBBC, FTFP-BERT, QGSP-BERT
+            alphaElasticProcess->RegisterMe(new G4HadronElastic("hElasticLHEP")); // // like QBBC, FTFP-BERT, QGSP-BERT
 
-            // Hadron inelastic process
-           // G4HadronInelasticProcess* alphaInelasticProcess = new G4HadronInelasticProcess("AlphaInelastic");
-            //alphaInelasticProcess->AddDataSet(new G4VCrossSectionDataSet("GheishaInelastic"));
-            //alphaInelasticProcess->RegisterMe(new G4HadronicInteraction("G4LEAlphaInelastic"));
-
+            //
             G4ProcessManager* alphaProcessManager = G4Alpha::Alpha()->GetProcessManager();
-            //alphaProcessManager->AddDiscreteProcess(alphaElasticProcess);
+            alphaProcessManager->AddDiscreteProcess(alphaElasticProcess);
             alphaProcessManager->AddDiscreteProcess(alphaInelasticProcess);
+        }
+        else if (particleName == "He3")
+        {
+            // inelastic
+            G4HadronInelasticProcess* He3InelasticProcess = new G4HadronInelasticProcess("He3Inelastic", G4He3::He3()); // *** process ***
+            G4CrossSectionInelastic* theHe3InelasticCrossSection = new G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc()); // *** cross section ***
+            theHe3InelasticCrossSection->SetMinKinEnergy(0.*eV);
+            theHe3InelasticCrossSection->SetMaxKinEnergy(25.6*PeV);
+            He3InelasticProcess->AddDataSet(theHe3InelasticCrossSection); // like FTFP-BERT, QGSP-BERT
+            G4BinaryLightIonReaction* theBinaryLightIonCascadeMode = new G4BinaryLightIonReaction(); // *** model ***
+            theBinaryLightIonCascadeMode->SetMinEnergy(0.*eV);
+            theBinaryLightIonCascadeMode->SetMaxEnergy(6.*GeV);
+            He3InelasticProcess->RegisterMe(theBinaryLightIonCascadeMode);
+
+            // elastic
+
+            //
+            G4ProcessManager* He3ProcessManager = G4He3::He3()->GetProcessManager();
+            He3ProcessManager->AddDiscreteProcess(He3InelasticProcess);
+
         }
         else if (particleName == "GenericIon")
         {
