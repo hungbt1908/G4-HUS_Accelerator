@@ -101,12 +101,14 @@
 #include "G4NeutronCaptureXS.hh"
 #include "G4NeutronRadCapture.hh"
 
-#include "G4HadronicParameters.hh"
-#include "G4Decay.hh"
-
 // ions
 #include "G4ionIonisation.hh"
 #include "G4IonParametrisedLossModel.hh"
+
+#include "G4HadronicParameters.hh"
+#include "G4Decay.hh"
+
+
 
 PhysicsList::PhysicsList()
   : G4VUserPhysicsList()
@@ -488,7 +490,7 @@ void PhysicsList::ConstructProcess()
 
         // Scaling the nucleon cross sections
         G4HadronicParameters::Instance()->SetApplyFactorXS(true);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(0.85);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(1.10);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(1.50);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(1.50);
     }
 }
