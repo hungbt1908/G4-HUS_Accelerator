@@ -1,6 +1,30 @@
 # 1. Geometry
-
+* This simulation included 2 main geometrical components:
+    * Target and base layer
+    * 6 detectors
+* This application allows you to set-up geometry of target and base layer by using below commands:
+    ```
+    /HUS/Geometry/Target/SetTargetXYDim 1. cm
+    /HUS/Geometry/Target/SetTargetZThick 200. nm 
+    /HUS/Geometry/Target/SetTargetAngle 60. deg
+    /HUS/Geometry/Target/SetBaseXYDim 1. cm
+    /HUS/Geometry/Target/SetBaseZThick 150. nm
+    /HUS/Geometry/Target/SetTargetMaterial B10
+    /HUS/Geometry/Target/SetBaseMaterial Al
+    ```
+* You can set position of 6 detector by using following commands in macro file:
+    ```
+    /HUS/Geometry/Detector/SetDet0Angle  40. deg
+    /HUS/Geometry/Detector/SetDet1Angle  70. deg
+    /HUS/Geometry/Detector/SetDet2Angle  150. deg
+    /HUS/Geometry/Detector/SetDet3Angle  233. deg
+    /HUS/Geometry/Detector/SetDet4Angle  270 deg
+    /HUS/Geometry/Detector/SetDet5Angle  330. deg
+    ```
+* Geometry image:
+![](./images/Capture.PNG)
 ---
+
 # 2. Physics
 ## 2.1 Hadronic components
 * **Photon**
