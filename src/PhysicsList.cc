@@ -1,5 +1,21 @@
 #include "PhysicsList.hh"
 
+#include "G4PhysicsListHelper.hh"
+#include "G4ProcessManager.hh"
+
+#include "G4BosonConstructor.hh"
+#include "G4LeptonConstructor.hh"
+#include "G4MesonConstructor.hh"
+#include "G4BaryonConstructor.hh"
+#include "G4IonConstructor.hh"
+#include "G4ShortLivedConstructor.hh"
+
+#include "G4Gamma.hh"
+#include "G4Proton.hh"
+#include "G4Alpha.hh"
+#include "G4He3.hh"
+#include "G4Neutron.hh"
+
 // gamma
 #include "G4RayleighScattering.hh" //
 #include "G4PenelopeRayleighModel.hh"
@@ -39,13 +55,21 @@
 #include "G4eplusAnnihilation.hh" //
 
 // proton
+#include "G4hMultipleScattering.hh"
+#include "G4hIonisation.hh"
+#include "G4hBremsstrahlung.hh"
+#include "G4hPairProduction.hh"
+#include "G4CoulombScattering.hh"
 #include "G4HadronInelasticProcess.hh" //
 #include "G4BGGNucleonInelasticXS.hh"
 #include "G4ParticleInelasticXS.hh"
-//
-#include "G4BGGNucleonElasticXS.hh"
+#include "G4CascadeInterface.hh"
+#include "G4BinaryCascade.hh"
 #include "G4QGSModel.hh"
 #include "G4FTFModel.hh"
+#include "G4HadronElasticProcess.hh" //
+#include "G4BGGNucleonElasticXS.hh"
+#include "G4ChipsElasticModel.hh"
 
 // alpha
 #include "G4hMultipleScattering.hh" //
@@ -58,10 +82,31 @@
 #include "G4HadronElastic.hh"
 
 // He3
-//#include "G4GGNuclNuclCrossSection.hh"
+#include "G4HadronInelasticProcess.hh" //
+#include "G4CrossSectionInelastic.hh"
+#include "G4BinaryLightIonReaction.hh"
+#include "G4HadronElasticProcess.hh" //
+#include "G4CrossSectionElastic.hh"
+#include "G4HadronElastic.hh"
+
+
+// neutron
+#include "G4HadronInelasticProcess.hh" //
+#include "G4NeutronInelasticXS.hh"
+#include "G4BinaryLightIonReaction.hh"
+#include "G4HadronElasticProcess.hh" //
+#include "G4NeutronElasticXS.hh"
+#include "G4HadronElastic.hh"
+#include "G4NeutronCaptureProcess.hh" //
+#include "G4NeutronCaptureXS.hh"
+#include "G4NeutronRadCapture.hh"
 
 #include "G4HadronicParameters.hh"
+#include "G4Decay.hh"
 
+// ions
+#include "G4ionIonisation.hh"
+#include "G4IonParametrisedLossModel.hh"
 
 PhysicsList::PhysicsList()
   : G4VUserPhysicsList()
@@ -357,13 +402,73 @@ void PhysicsList::ConstructProcess()
             He3ProcessManager->AddDiscreteProcess(theHe3ElasticProcess);
             He3ProcessManager->AddDiscreteProcess(theHe3InelasticProcess);
         }
+        else if (particleName == "neutron")
+        {
+            // Hadron components
+            // ----------------------------------------------------------------
+
+            // inelastic
+            /* process */
+            G4HadronInelasticProcess* theNeutronInelasticProcess = new G4HadronInelasticProcess("neutronInelastic", G4Neutron::Neutron());
+            /* cross section */
+            G4NeutronInelasticXS* theNeutronInelasticCrossSection = new G4NeutronInelasticXS();
+            theNeutronInelasticCrossSection->SetMinKinEnergy(0.*eV);
+            theNeutronInelasticCrossSection->SetMaxKinEnergy(100.*TeV);
+            theNeutronInelasticProcess->AddDataSet(theNeutronInelasticCrossSection);
+            /* model */ //like QBBC
+            G4CascadeInterface* theNeutronInelasticModel = new G4CascadeInterface(); // Bertini Cascade model
+            theNeutronInelasticModel->SetMinEnergy(1.*GeV);
+            theNeutronInelasticModel->SetMaxEnergy(6.*GeV);
+            theNeutronInelasticProcess->RegisterMe(theNeutronInelasticModel);
+            G4BinaryCascade* theNeutronInelasticModel2 = new G4BinaryCascade(); // Binary Cascade model
+            theNeutronInelasticModel2->SetMinEnergy(0.*eV);
+            theNeutronInelasticModel2->SetMaxEnergy(1.5*GeV);
+            theNeutronInelasticProcess->RegisterMe(theNeutronInelasticModel2);
+
+            // elastic
+            /* process */
+            G4HadronElasticProcess* theNeutronElasticProcess = new G4HadronElasticProcess("hadElastic");
+            /* cross section */
+            G4NeutronElasticXS* theNeutronElasticCrossSection = new G4NeutronElasticXS();
+            theNeutronElasticProcess->AddDataSet(theNeutronElasticCrossSection);
+            theNeutronElasticCrossSection->SetMinKinEnergy(0.*eV);
+            theNeutronElasticCrossSection->SetMaxKinEnergy(100.*TeV);
+            /* model */
+            G4HadronElastic* theNeutronElasticModel = new G4HadronElastic("hElasticCHIPS");
+            theNeutronElasticModel->SetMinEnergy(0.*eV);
+            theNeutronElasticModel->SetMaxEnergy(100.*TeV);
+            theNeutronElasticProcess->RegisterMe(theNeutronElasticModel);
+
+            // capture
+            /* process */
+            G4NeutronCaptureProcess* theNeutronCaptureProcess = new G4NeutronCaptureProcess();
+            /* cross section */
+            G4NeutronCaptureXS* theNeutronCaptureCrossSection = new G4NeutronCaptureXS();
+            theNeutronCaptureCrossSection->SetMinKinEnergy(0.*eV);
+            theNeutronCaptureCrossSection->SetMaxKinEnergy(100.*TeV);
+            // theNeutronCaptureProcess->AddDataSet(theNeutronCaptureCrossSection);
+            /* model */
+            G4NeutronRadCapture* theNeutronCaptureModel = new G4NeutronRadCapture();
+            theNeutronCaptureModel->SetMinEnergy(0.*eV);
+            theNeutronCaptureModel->SetMaxEnergy(100.*TeV);
+            theNeutronCaptureProcess->RegisterMe(theNeutronCaptureModel);
+
+            //
+            G4ProcessManager* theNeutronProcessManager = G4Neutron::Neutron()->GetProcessManager();
+            theNeutronProcessManager->AddDiscreteProcess(theNeutronElasticProcess);
+            theNeutronProcessManager->AddDiscreteProcess(theNeutronInelasticProcess);
+            theNeutronProcessManager->AddDiscreteProcess(theNeutronCaptureProcess);
+
+        }
         else if (particleName == "GenericIon")
         {
-            // EM proceses
+            // EM components
             //
             ph->RegisterProcess(new G4hMultipleScattering, particle);
 
-            //
+            // Hadron components
+            // ----------------------------------------------------------------
+
             G4ionIonisation* ionIoni = new G4ionIonisation;
             ionIoni->SetEmModel(new G4IonParametrisedLossModel());
             ph->RegisterProcess(ionIoni, particle);
