@@ -3,8 +3,10 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
-
+#include <fstream>
+#include <iostream>
 #include <ctime>
+using namespace std;
 
 class G4Run;
 class RunActionMessenger;
@@ -22,6 +24,7 @@ class RunAction : public G4UserRunAction
 
   private:
     G4String fFileName;
+    ofstream geant4OutputName;
     clock_t begin;
     clock_t end;
     double diffclock(clock_t clock1, clock_t clock2);

@@ -66,7 +66,24 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
+  // get time
+  time_t now = time(NULL);
+  struct std::tm* beginTime = localtime(&now);
+
   begin = clock();
+
+  // open text file to write run information
+  geant4OutputName.open("Geant4_run.out", std::ios::out);
+
+  geant4OutputName << " ==> GEANT4 RUN OUTPUT SUMMARY <==" << "\n";
+  geant4OutputName << " Author: BUI Tien Hung"             << "\n";
+  geant4OutputName << " Email: hungbt1908@gmail.com "      << "\n";
+  geant4OutputName << " Adress: Institute for Nuclear Science and Technology (INST)" << "\n";
+  geant4OutputName << " -----------------------------------------------------------" << "\n";
+  geant4OutputName << " " << "\n";
+  geant4OutputName << "@ beginning time          : " << asctime(beginTime);
+  geant4OutputName.close();
+ 
 
   //inform the runManager to save random number seed
   //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
@@ -87,6 +104,27 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {
   end = clock();
+  // get time
+  time_t now = time(0);
+  struct std::tm* endTime = localtime(&now);
+
+  // get the number of threads used
+  int numberOfWorkerThreads = G4Threading::GetNumberOfRunningWorkerThreads();
+
+  //
+  G4RunManager* runManager = G4RunManager::GetRunManager();
+  int totalEvents = runManager->GetNumberOfEventsToBeProcessed();
+
+  // open text file to write run information
+  if (IsMaster())
+  {
+    geant4OutputName.open("Geant4_run.out", ios::app);
+    geant4OutputName << "@ ending time             : " << asctime(endTime);
+    geant4OutputName << "@ elapsed time            : " << (double(diffclock(end, begin)/1000)) << " seconds" << "\n";
+    geant4OutputName << "@ number of worker threads: " << numberOfWorkerThreads << " threads" << "\n";
+    geant4OutputName << "@ total events            : " << totalEvents << " events" << "\n";
+    geant4OutputName.close();
+  }
 
   // print histogram statistics
   //
@@ -96,15 +134,6 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
   //
   analysisManager->Write();
   analysisManager->CloseFile();
-
-  int numberOfWorkerThreads = G4Threading::GetNumberOfRunningWorkerThreads();
-
-    if (IsMaster()) 
-    {
-        G4cout << "ELAPSED TIME IN SECONDS: "
-               << (double(diffclock(end, begin)/1000))/(double)numberOfWorkerThreads 
-               << " seconds" << G4endl;
-    }
 }
 
 void RunAction::SetFilename(G4String fileName) 
