@@ -13,8 +13,7 @@
 
 
 DetectorConstruction::DetectorConstruction()
-  : G4VUserDetectorConstruction(), 
-    phantomXDim(0.), phantomYDim(0.), phantomZDim(0.)
+  : G4VUserDetectorConstruction()
 {
   	pDetectorMessenger = new DetectorMessenger(this); 
 
@@ -114,7 +113,7 @@ void DetectorConstruction::ConstructTarget()
 
 	// target
 	G4Box* solidTarget =  new G4Box("Target", 0.5*targetXYDim, 0.5*targetXYDim, 0.5*targetZThick);
-	logicTarget =  new G4LogicalVolume(solidTarget, initTargetMaterial, "Target");
+	logicTarget =  new G4LogicalVolume(solidTarget, targetMat, "Target");
   	G4double targetZPos = (-0.5*frameZThick + 0.5*targetZThick);
     new G4PVPlacement(0, G4ThreeVector(0, 0, targetZPos), logicTarget, "Target", logicTargetFrame, false, 0, checkOverlap);
 
@@ -125,7 +124,7 @@ void DetectorConstruction::ConstructTarget()
 
 	// base layer
 	G4Box* solidBackLayer =  new G4Box("solidBackLayer", 0.5*baseXYDim,  0.5*baseXYDim, 0.5*baseZThick);
-	logicBackLayer = new G4LogicalVolume(solidBackLayer, initBaseMaterial, "logicBackLayer");
+	logicBackLayer = new G4LogicalVolume(solidBackLayer, baseMat, "logicBackLayer");
 	G4double backLayerZPos = 0.5*frameZThick - 0.5*baseZThick;
 	new G4PVPlacement(0, G4ThreeVector(0, 0, backLayerZPos), logicBackLayer, "BackLayer",  logicTargetFrame, false, 0, checkOverlap);
 
@@ -193,66 +192,42 @@ void DetectorConstruction::SetTargetAngleRotation(G4double pTargetAngle)
 	this->targetAngle = pTargetAngle;
 }
 
-void DetectorConstruction::SetTargetMaterial(const G4String mat)
+void DetectorConstruction::SetTargetMaterial(const G4String& mat)
 {
 	G4NistManager* nistManager = G4NistManager::Instance();
-	G4Material* pttoMaterial;
-	if(mat == "B10") pttoMaterial = new G4Material("B10", 5., 10.0129369*g/mole, 2.37*g/cm3);
+	if(mat == "B10") 
+	{
+		targetMat = new G4Material("B10", 5., 10.0129369*g/mole, 2.37*g/cm3);
+	}
 	else if(mat == "Al-N")
 	{
 		G4Element* ElAl = nistManager->FindOrBuildElement(13);
 		G4Element* ElN = nistManager->FindOrBuildElement(7);
-		G4Material* pttoMaterial = new G4Material("AlN", 3.255 *g/cm3, 2);
-    	pttoMaterial->AddElement(ElAl,1);
-    	pttoMaterial->AddElement(ElN,1);
+		targetMat = new G4Material("AlN", 3.255 *g/cm3, 2);
+    	targetMat->AddElement(ElAl,1);
+    	targetMat->AddElement(ElN,1);
 	} 
 	else
 	{
-		G4cout << "Cannot found " << mat << " material !!!" << G4endl;
-	}
-
-	if(pttoMaterial)
-	{
-		if(pttoMaterial != initTargetMaterial)
-		{
-			initTargetMaterial = pttoMaterial;
-			if(logicTarget)
-			{
-				logicTarget->SetMaterial(initTargetMaterial);
-				G4RunManager::GetRunManager()->PhysicsHasBeenModified();
-			}
-		}
+		targetMat = nistManager->FindOrBuildMaterial("G4_B");
 	}
 }
 
-void DetectorConstruction::SetBaseMaterial(const G4String mat)
+void DetectorConstruction::SetBaseMaterial(const G4String& mat)
 {
 	G4NistManager* nistManager = G4NistManager::Instance();
 	G4Material* pttoMaterial;
 	if(mat == "Al")
 	{
-		pttoMaterial = nistManager->FindOrBuildMaterial("G4_Al");
+		baseMat = nistManager->FindOrBuildMaterial("G4_Al");
 	}
 	else if(mat == "Ti")
 	{
-		pttoMaterial = nistManager->FindOrBuildMaterial("G4_Ti");
+		baseMat = nistManager->FindOrBuildMaterial("G4_Ti");
 	} 
 	else
 	{
 		G4cout << "Cannot found " << mat << " material !!!" << G4endl;
-	}
-
-	if(pttoMaterial)
-	{
-		if(pttoMaterial != initBaseMaterial)
-		{
-			initBaseMaterial = pttoMaterial;
-			if(logicBackLayer)
-			{
-				logicBackLayer->SetMaterial(initBaseMaterial);
-				G4RunManager::GetRunManager()->PhysicsHasBeenModified();
-			}
-		}
 	}
 }
 
@@ -267,34 +242,4 @@ void DetectorConstruction::PrintInformation()
 	G4cout << "---> The Target thickness is    " 
 		   << 2.0*solidTargetFrame->GetZHalfLength()
 		   << G4endl;
-}
-
-void DetectorConstruction::SetNumberOfVoxelsAlongX(int _nOfVoxelAlongX)
-{
-  this->nOfVoxelAlongX = _nOfVoxelAlongX;
-}
-
-void DetectorConstruction::SetNumberOfVoxelsAlongY(int _nOfVoxelAlongY)
-{
-  this->nOfVoxelAlongY = _nOfVoxelAlongY;
-}
-
-void DetectorConstruction::SetNumberOfVoxelsAlongZ(int _nOfVoxelAlongZ)
-{
-  this->nOfVoxelAlongZ = _nOfVoxelAlongZ;
-}
-
-void DetectorConstruction::SetPhantomSizeX(G4double _phantomXDim)
-{
-  this->phantomXDim = _phantomXDim;
-}
-
-void DetectorConstruction::SetPhantomSizeY(G4double _phantomYDim)
-{
-  this->phantomYDim = _phantomYDim;
-}
-
-void DetectorConstruction::SetPhantomSizeZ(G4double _phantomZDim)
-{
-  this->phantomZDim = _phantomZDim;
 }

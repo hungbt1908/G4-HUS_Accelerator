@@ -40,6 +40,8 @@ public:
     G4Material* B10;
     G4Material* Ti;
     G4Material* Si;
+    G4Material* targetMat;
+    G4Material* baseMat;
     G4Material* initTargetMaterial;
     G4Material* initBaseMaterial;
 
@@ -69,31 +71,14 @@ public:
     void SetBaseXYDim(G4double);
     void SetBaseZThick(G4double);
     void SetTargetAngleRotation(G4double);
-    void SetTargetMaterial(const G4String mat);
-    void SetBaseMaterial(const G4String mat);
+    void SetTargetMaterial(const G4String& mat);
+    void SetBaseMaterial(const G4String& mat);
     void SetDetAngle(int detID, G4double angle);
     void PrintInformation();
-
-
-
-
-
-public:
-    G4double phantomXDim, phantomYDim, phantomZDim;
-    G4int nOfVoxelAlongX, nOfVoxelAlongY, nOfVoxelAlongZ;
-    PhantomSD* phantomSD;
-    PhantomROGeometry* phantomROGeometry;
 
 public:
     DetectorMessenger* pDetectorMessenger;
 
-    void SetPhantomSizeX(G4double);
-    void SetPhantomSizeY(G4double);
-    void SetPhantomSizeZ(G4double);
-
-    void SetNumberOfVoxelsAlongX(int);
-    void SetNumberOfVoxelsAlongY(int);
-    void SetNumberOfVoxelsAlongZ(int);
 };
 
 #endif
