@@ -1,4 +1,7 @@
-# 1. Geometry
+
+# ⭐ About this project
+This project was implemented to simulate a proton experiment at HUS.
+## 1. Geometry
 * This simulation included 2 main geometrical components:
     * Target and base layer
     * 6 detectors
@@ -23,10 +26,9 @@
     ```
 * Geometry image:
 ![](./images/Capture.PNG)
----
 
-# 2. Physics
-## 2.1 Hadronic components
+## 2. Physics
+### 2.1 Hadronic components
 * **Photon**
   * Photon Nuclear:
     * process: `G4HadronInelasticProcess("photonNuclear")`
@@ -111,3 +113,22 @@
   * Nuclear Stopping: (default)
 * **GenericIon**
   * Multiple Scattering: (default)
+
+# 🔧 Requirements
+  * Ubuntu 20.04/Window 10
+  * Geant4.11.1.2
+  * Root data analysis framework
+
+# 🏃‍♂️ How to run
+* Run example in interactive mode
+    ```c++
+    ./sim
+    ```
+* Run example in batch mode
+    ```c++
+    ./sim run.mac
+    ```
+# 🚀 About Me
+**Bùi Tiến Hưng** - *hungbt1908@gmail.com*
+1. Nuclear Engineering Lab, Hanoi University of Science and Technology (HUST).
+2. Vietnam Atomic Energy Institute (VINATOM).
