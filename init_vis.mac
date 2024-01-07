@@ -11,14 +11,13 @@
 #/run/numberOfThreads 4
 
 # Setups geometry
+/HUS/Geometry/Target/SetTargetMaterial B10
+/HUS/Geometry/Target/SetBaseMaterial Al
 /HUS/Geometry/Target/SetTargetXYDim 1. cm
 /HUS/Geometry/Target/SetTargetZThick 200. nm 
 /HUS/Geometry/Target/SetTargetAngle 60. deg
 /HUS/Geometry/Target/SetBaseXYDim 1. cm
 /HUS/Geometry/Target/SetBaseZThick 150. nm
-
-#/HUS/Geometry/Target/SetTargetMaterial B10
-#/HUS/Geometry/Target/SetBaseMaterial Al
 
 /HUS/Geometry/Detector/SetDet0Angle  40. deg
 /HUS/Geometry/Detector/SetDet1Angle  70. deg
