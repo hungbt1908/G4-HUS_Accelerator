@@ -132,3 +132,8 @@ This project was implemented to simulate a proton experiment at HUS.
 **Bùi Tiến Hưng** - *hungbt1908@gmail.com*
 1. Nuclear Engineering Lab, Hanoi University of Science and Technology (HUST).
 2. Vietnam Atomic Energy Institute (VINATOM).
+
+**Interestet Fields:**
+* Medical physics, 
+* Monte-Carlo simulation, 
+* Machine learning.
