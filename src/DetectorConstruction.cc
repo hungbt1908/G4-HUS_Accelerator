@@ -1,6 +1,13 @@
 #include "DetectorConstruction.hh"
 #include "DetectorMessenger.hh"
 
+#include "G4RunManager.hh"
+
+#include "G4GeometryManager.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SolidStore.hh"
+
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
@@ -8,9 +15,6 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VisAttributes.hh"
-// /#include "G4BestUnit.hh"
-#include "G4RunManager.hh"
-
 
 DetectorConstruction::DetectorConstruction()
   : G4VUserDetectorConstruction()
@@ -18,8 +22,8 @@ DetectorConstruction::DetectorConstruction()
   	pDetectorMessenger = new DetectorMessenger(this); 
 
 	G4NistManager* nistManager = G4NistManager::Instance();
-    initTargetMaterial = nistManager->FindOrBuildMaterial("G4_B");
-	initBaseMaterial = nistManager->FindOrBuildMaterial("G4_Ti");
+    // targetMat = nistManager->FindOrBuildMaterial("G4_B");
+	// baseMat = nistManager->FindOrBuildMaterial("G4_Ti");
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -27,52 +31,35 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-  DefineMaterial();
-  DefineAttribute();
-  return ConstructVolume();
+	// clear old geometry
+	G4GeometryManager::GetInstance()->OpenGeometry();
+	G4PhysicalVolumeStore::GetInstance()->Clean();
+	G4LogicalVolumeStore::GetInstance()->Clean();
+	G4SolidStore::GetInstance()->Clean();
+
+	DefineMaterial();
+	DefineAttribute();
+	return ConstructVolume();
 }
 
 void DetectorConstruction::DefineMaterial()
 {
-  G4NistManager* nistManager = G4NistManager::Instance();
-  Air = nistManager->FindOrBuildMaterial("G4_AIR");
-  Vacuum = nistManager-> FindOrBuildMaterial("G4_Galactic");
-  B10 = new G4Material("B10", 5., 10.0129369*g/mole, 2.37*g/cm3);
-  Ti = nistManager->FindOrBuildMaterial("G4_Ti");
-  Si = nistManager->FindOrBuildMaterial("G4_Si");
-//   Water = nistManager-> FindOrBuildMaterial("G4_WATER");
-
-//   Mylar = nistManager->FindOrBuildMaterial("G4_MYLAR");
-
-// 	G4Element* elW = nistManager->FindOrBuildElement("W");
-// 	G4Element* elNi = nistManager->FindOrBuildElement("Ni");
-// 	G4Element* elFe = nistManager->FindOrBuildElement("Fe");
-// 	G4Element* elCu = nistManager->FindOrBuildElement("Cu");
-
-//   Steel = new G4Material("Steel", 18*g/cm3, 3);
-//   Steel->AddElement(elW, 95*perCent);
-//   Steel->AddElement(elNi, 3.75*perCent);
-//   Steel->AddElement(elFe, 1.25*perCent);
-
-// 	JawMat = new G4Material("JawMat", 18.768*g/cm3, 4); 
-// 	JawMat->AddElement(elW, 95*perCent);
-// 	JawMat->AddElement(elNi, 2.8*perCent);
-// 	JawMat->AddElement(elFe, 1.2*perCent);
-// 	JawMat->AddElement(elCu, 1.0*perCent);
-
-// 	G4cout << *(G4Material::GetMaterialTable());
+	G4NistManager* nistManager = G4NistManager::Instance();
+	Air = nistManager->FindOrBuildMaterial("G4_AIR");
+	Vacuum = nistManager-> FindOrBuildMaterial("G4_Galactic");
+	Si = nistManager->FindOrBuildMaterial("G4_Si");
 }
 
 void DetectorConstruction::DefineAttribute()
 {
-  worldAtt = new G4VisAttributes(G4Color(1.,1.,1.));
-  worldAtt->SetVisibility(false);
+	worldAtt = new G4VisAttributes(G4Color(1.,1.,1.));
+	worldAtt->SetVisibility(false);
 
-  phantomAtt = new G4VisAttributes(G4Color(0.,0.,1.));
-  phantomAtt->SetVisibility(true);
+	phantomAtt = new G4VisAttributes(G4Color(0.,0.,1.));
+	phantomAtt->SetVisibility(true);
 
-  voxelAtt = new G4VisAttributes(G4Color(0.,0.,1.));
-  voxelAtt-> SetVisibility(true);
+	voxelAtt = new G4VisAttributes(G4Color(0.,0.,1.));
+	voxelAtt-> SetVisibility(true);
 }
 
 G4VPhysicalVolume* DetectorConstruction::ConstructVolume()
@@ -88,7 +75,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructVolume()
 	ConstructTarget();
 	ConstructDetector();
 	
-	PrintInformation();
+	// PrintInformation();
 
 	return physWorld;
 }
@@ -132,7 +119,6 @@ void DetectorConstruction::ConstructTarget()
 	backLayerColor->SetVisibility(true);
 	backLayerColor->SetForceSolid(true);
 	logicBackLayer->SetVisAttributes(backLayerColor);
-
 }
 
 void DetectorConstruction::ConstructDetector()
@@ -195,40 +181,66 @@ void DetectorConstruction::SetTargetAngleRotation(G4double pTargetAngle)
 void DetectorConstruction::SetTargetMaterial(const G4String& mat)
 {
 	G4NistManager* nistManager = G4NistManager::Instance();
+	G4Material* pttoMaterial;
+	// check "mat" material
 	if(mat == "B10") 
 	{
-		targetMat = new G4Material("B10", 5., 10.0129369*g/mole, 2.37*g/cm3);
+		pttoMaterial = new G4Material("B10", 5., 10.0129369*g/mole, 2.37*g/cm3);
 	}
-	else if(mat == "Al-N")
+	if(mat == "B10-11")
+	{
+
+	}
+	if(mat == "Al-N")
 	{
 		G4Element* ElAl = nistManager->FindOrBuildElement(13);
 		G4Element* ElN = nistManager->FindOrBuildElement(7);
-		targetMat = new G4Material("AlN", 3.255 *g/cm3, 2);
-    	targetMat->AddElement(ElAl,1);
-    	targetMat->AddElement(ElN,1);
+		pttoMaterial = new G4Material("AlN", 3.255 *g/cm3, 2);
+    	pttoMaterial->AddElement(ElAl,1);
+    	pttoMaterial->AddElement(ElN,1);
 	} 
-	else
-	{
-		targetMat = nistManager->FindOrBuildMaterial("G4_B");
-	}
+
+	// change material
+	targetMat = pttoMaterial;
+	// if(pttoMaterial != targetMat)
+	// {
+	// 	G4cout << "New material for target has been added !!!" << G4endl;
+	// 	targetMat = pttoMaterial;
+	// 	if(logicTarget)
+	// 	{
+	// 		logicTarget->SetMaterial(targetMat);
+	// 		G4RunManager::GetRunManager()->PhysicsHasBeenModified();
+	// 	}
+	// }
 }
 
 void DetectorConstruction::SetBaseMaterial(const G4String& mat)
 {
 	G4NistManager* nistManager = G4NistManager::Instance();
 	G4Material* pttoMaterial;
+
+	// check "mat" material
 	if(mat == "Al")
 	{
-		baseMat = nistManager->FindOrBuildMaterial("G4_Al");
+		pttoMaterial = nistManager->FindOrBuildMaterial("G4_Al");
 	}
-	else if(mat == "Ti")
+	if(mat == "Ti")
 	{
-		baseMat = nistManager->FindOrBuildMaterial("G4_Ti");
+		pttoMaterial = nistManager->FindOrBuildMaterial("G4_Ti");
 	} 
-	else
-	{
-		G4cout << "Cannot found " << mat << " material !!!" << G4endl;
-	}
+
+	// change material
+	baseMat = pttoMaterial;
+	// if(pttoMaterial != baseMat)
+	// {
+	// 	G4cout << "New material for base layer has been added !!!" << G4endl;
+	// 	baseMat = pttoMaterial;
+	// 	if(logicBackLayer)
+	// 	{
+	// 		logicBackLayer->SetMaterial(baseMat);
+	// 		G4RunManager::GetRunManager()->PhysicsHasBeenModified();
+	// 	}
+	// }
 }
 
 void DetectorConstruction::SetDetAngle(int detID, G4double angle)
@@ -238,8 +250,10 @@ void DetectorConstruction::SetDetAngle(int detID, G4double angle)
 
 void DetectorConstruction::PrintInformation()
 {
+
 	G4cout << "\n---------------------------------------------------------\n";
 	G4cout << "---> The Target thickness is    " 
 		   << 2.0*solidTargetFrame->GetZHalfLength()
 		   << G4endl;
+	G4cout << logicTarget->GetMaterial()->GetName()<< G4endl;
 }

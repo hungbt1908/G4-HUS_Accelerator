@@ -37,13 +37,9 @@ public:
     // materials 
     G4Material* Air;
     G4Material* Vacuum;
-    G4Material* B10;
-    G4Material* Ti;
     G4Material* Si;
     G4Material* targetMat;
     G4Material* baseMat;
-    G4Material* initTargetMaterial;
-    G4Material* initBaseMaterial;
 
     // visualization
     G4VisAttributes* worldAtt;
