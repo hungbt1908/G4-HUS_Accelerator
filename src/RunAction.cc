@@ -79,7 +79,7 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
     geant4OutputName << "                              ==> GEANT4 OUTPUT REPORT <==                            " << "\n";
     geant4OutputName << "  __________________________________ [ Job Title ] _________________________________  " << "\n";
     geant4OutputName << " |                                                                                  | " << "\n";
-    geant4OutputName << " | Application for simulatimng Accelerator at HUS                                   | " << "\n";
+    geant4OutputName << " | Application for simulating Accelerator at HUS                                    | " << "\n";
     geant4OutputName << " | -------------------------------------------------------------------------------- | " << "\n";
     geant4OutputName << " | author: BUI Tien Hung                                                            | " << "\n";
     geant4OutputName << " | email : hungbt1908@gmail.com                                                     | " << "\n";
@@ -151,7 +151,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
         geant4OutputName << "  + number of worker threads: " << numberOfWorkerThreads << " threads" << "\n";
         geant4OutputName << "  + beam on                 : " << totalEvents << " events" << "\n";
         geant4OutputName << "  + total events            : " << nofEvents   << " events" << "\n";
-        geant4OutputName << "  + elapsed time            : " << (double(diffclock(end, begin)/1000)) << " seconds    " << "\n";
+        geant4OutputName << "  + elapsed time            : " << (double(diffclock(end, begin)/1000))/numberOfWorkerThreads << " seconds    " << "\n";
         geant4OutputName.close();
     }
 
