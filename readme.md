@@ -24,7 +24,18 @@ This project was implemented to simulate a proton experiment at HUS.
     /HUS/Geometry/Detector/SetDet4Angle  270 deg
     /HUS/Geometry/Detector/SetDet5Angle  330. deg
     ```
+* The target's material and base layer's material can be chose by using commands:
+
+  ```bash
+  # targetaMat = [B, B10, B11, Au197, Al-N]
+  /HUS/Geometry/Target/SetTargetMaterial B10
+
+  # baseMat = [Al, Ti, C3H6N6, C3H6O2]
+  /HUS/Geometry/Target/SetBaseMaterial Al
+  ```
+
 * Geometry image:
+
 ![](./images/Capture.PNG)
 
 ## 2. Physics
