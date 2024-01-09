@@ -28,15 +28,16 @@ This project was implemented to simulate a proton experiment at HUS.
 ![](./images/Capture.PNG)
 
 ## 2. Physics
-### 2.1 Hadronic components
-* **Photon**
+There are 2 main physic components:
+### Hadronic components
+#### **Photon**
   * Photon Nuclear:
     * process: `G4HadronInelasticProcess("photonNuclear")`
     * cross section: `G4GammaNuclearXS()`
     * model: 
       * `G4LowEGammaNuclearModel` in range 0 - 200 MeV
       * `G4CascadeInterface` in range 199 MeV - 10 GeV
-* **Proton**
+#### **Proton**
   * Elastic: 
     * process: `G4HadronElasticProcess("hadElastic")`
     * cross section: `G4BGGNucleonElasticXS(G4Proton::Definition())`
@@ -45,7 +46,7 @@ This project was implemented to simulate a proton experiment at HUS.
     * process: `G4HadronInelasticProcess("protonInelastic")`
     * cross section: `G4ParticleInelasticXS(G4Proton::Definition())`
     * model: `G4CascadeInterface` in range 0 - 6 GeV
-* **Alpha**
+#### **Alpha**
   * Elastic:
     * process: `G4HadronElasticProcess("hadElastic")`
     * cross section: `G4CrossSectionElastic(new G4ComponentGGNuclNuclXsc())` in range 0 - 25.6 PeV
@@ -54,12 +55,12 @@ This project was implemented to simulate a proton experiment at HUS.
     * process: `G4HadronInelasticProcess("AlphaInelastic")`
     * cross section: `G4CrossSectionInelastic(new G4ComponentGGNuclNuclXsc())` in range 0 - 25.6 PeV
     * model: `G4BinaryLightIonReaction` in range 0 - 6 GeV
-* **He3**
+#### **He3**
   * Elastic:
     * process: `G4HadronElasticProcess("hadElastic")`
     * cross section: `G4CrossSectionElastic(new G4ComponentGGNuclNuclXsc())` in range 0 - 25.6 PeV
     * model: `G4HadronElastic("hElasticLHEP")` in range 0 - 100 TeV
-* **Neutron**
+#### **Neutron**
   * Elastic:
     * process: `G4HadronElasticProcess("hadElastic")`
     * cross section: `G4NeutronElasticXS`
@@ -74,8 +75,8 @@ This project was implemented to simulate a proton experiment at HUS.
     * process: `G4NeutronCaptureProcess`
     * cross section: `G4NeutronCaptureXS` in range 0 - 100 TeV
     * model: `G4NeutronRadCapture` in range 0 - 100 TeV
-## 2.2 EM components
-* **Photon**
+### EM components
+#### **Photon**
   * Rayleigh Scattering: 
     * model: `G4LivermoreRayleighModel`
   * Photoelectric:
@@ -84,7 +85,7 @@ This project was implemented to simulate a proton experiment at HUS.
     * model: `G4KleinNishinaModel`
   * Gamma Conversion:
     * model: `G4BetheHeitlerModel`
-* **Electron**
+#### **Electron**
   * Coulomb Scattering:
     * model: `G4eSingleCoulombScatteringModel`
   * Multiple Scattering:
@@ -92,7 +93,7 @@ This project was implemented to simulate a proton experiment at HUS.
   * Ionisation:
       * model: `G4MollerBhabhaModel`
   * Bremsstrahlung: (default)
-* **Positron**
+#### **Positron**
   * Coulomb Scattering:
     * model: `G4eSingleCoulombScatteringModel`
   * Multiple Scattering:
@@ -101,18 +102,26 @@ This project was implemented to simulate a proton experiment at HUS.
     * model: `G4MollerBhabhaModel`
   * Bremsstrahlung: (default)
   * Annihilation: (default)
-* **Proton**
+#### **Proton**
   * Multiple Scattering: (default)
   * Ionisation: (default)
   * Bremsstrahlung: (default)
   * Pair Production: (default)
   * Coulomb Scattering: (default)
-* **Alpha**
+#### **Alpha**
   * Multiple Scattering: (default)
   * Ionisation: (default)
   * Nuclear Stopping: (default)
-* **GenericIon**
+#### **GenericIon**
   * Multiple Scattering: (default)
+
+To decrease uncertainties of simulation process, we added the scaling cross section function for nucleons (proton and neutron) in the PhysicsList class:
+  ```c++
+  // Scaling the nucleon cross sections
+  G4HadronicParameters::Instance()->SetApplyFactorXS(true);
+  G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(1.50);
+  G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(1.50);
+```
 
 # 🔧 Requirements
   * Ubuntu 20.04/Window 10
