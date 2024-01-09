@@ -195,6 +195,10 @@ void DetectorConstruction::SetTargetMaterial(const G4String& mat)
 	{
 		pttoMaterial = new G4Material("B11", 5., 10.811*g/mole, 2.37*g/cm3);
 	}
+	if(mat == "Au197")
+	{
+		pttoMaterial = new G4Material("Au197", 79., 196.97*g/mole, 19.3*g/cm3);
+	}
 	if(mat == "Al-N")
 	{
 		G4Element* ElAl = nistManager->FindOrBuildElement(13);
