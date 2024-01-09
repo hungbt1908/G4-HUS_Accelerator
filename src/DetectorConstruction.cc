@@ -189,7 +189,7 @@ void DetectorConstruction::SetTargetMaterial(const G4String& mat)
 	}
 	if(mat == "B10-11")
 	{
-
+		pttoMaterial = new G4Material("B10-B11", 5., 10.811*g/mole, 2.37*g/cm3);
 	}
 	if(mat == "Al-N")
 	{
@@ -227,7 +227,29 @@ void DetectorConstruction::SetBaseMaterial(const G4String& mat)
 	if(mat == "Ti")
 	{
 		pttoMaterial = nistManager->FindOrBuildMaterial("G4_Ti");
-	} 
+	}
+	if(mat == "C3H6N6")
+	{
+		// C12
+		G4Isotope* isoC12 = new G4Isotope("C12", 6, 12, 12.00*g/mole);
+		G4Element* elC12 = new G4Element("C12","C12", 1);
+		elC12->AddIsotope(isoC12, 100.*perCent);
+
+		// H1
+		G4Isotope* isoH1 = G4Isotope("Hydro",1,1,1.00*g/mole);
+		G4Element* elH = new G4Element("Hyrdro" ,"H", 1);
+		elH->AddIsotope(isoC12, 100.*perCent);
+
+		// N14
+		G4Isotope* isoN14 = new G4Isotope("N14", 7, 14, 14.00*g/mole);
+		G4Element* elN14 = new G4Element("N14", "N14", 1);
+		elN14->AddIsotope(isoN14, 100.*perCent);
+
+		pttoMaterial = new G4Material("Melamine", 1.573*g/cm3, 3);
+		pttoMaterial->AddElement(elC12, 3);
+    	pttoMaterial->AddElement(elH, 6);
+   	 	pttoMaterial->AddElement(elN14, 6);
+	}
 
 	// change material
 	baseMat = pttoMaterial;
