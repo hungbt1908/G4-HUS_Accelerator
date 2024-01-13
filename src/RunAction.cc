@@ -36,12 +36,12 @@ RunAction::RunAction()
 
   // Book histograms, ntuple
   //
-  analysisManager->CreateH1("EDep","Edep in Det0", 200, 0., 2.0*MeV);
-  analysisManager->CreateH1("EDep","Edep in Det1", 200, 0., 2.0*MeV);
-  analysisManager->CreateH1("EDep","Edep in Det2", 200, 0., 2.0*MeV);
-  analysisManager->CreateH1("EDep","Edep in Det3", 200, 0., 2.0*MeV);
-  analysisManager->CreateH1("EDep","Edep in Det4", 200, 0., 2.0*MeV);
-  analysisManager->CreateH1("EDep","Edep in Det5", 200, 0., 2.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det0", 8000, 0., 8.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det1", 8000, 0., 8.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det2", 8000, 0., 8.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det3", 8000, 0., 8.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det4", 8000, 0., 8.0*MeV);
+  analysisManager->CreateH1("EDep","Edep in Det5", 8000, 0., 8.0*MeV);
 
   // Creating ntuple
   for (G4int NofDet=0; NofDet<6; NofDet++)
@@ -151,7 +151,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
         geant4OutputName << "  + number of worker threads: " << numberOfWorkerThreads << " threads" << "\n";
         geant4OutputName << "  + beam on                 : " << totalEvents << " events" << "\n";
         geant4OutputName << "  + total events            : " << nofEvents   << " events" << "\n";
-        geant4OutputName << "  + elapsed time            : " << (double(diffclock(end, begin)/1000))/numberOfWorkerThreads << " seconds    " << "\n";
+        geant4OutputName << "  + elapsed time            : " << (double(diffclock(end, begin)/1000)) << " seconds    " << "\n";
         geant4OutputName.close();
     }
 
