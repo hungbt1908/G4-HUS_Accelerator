@@ -1,35 +1,35 @@
-# Macro file for the initialization of example B4
-# in interactive session
-#
-# Set some default verbose
-#
-#/control/verbose 2
-#/control/saveHistory
-#/run/verbose 2
-#
-# Change the default number of threads (in multi-threaded mode)
-#/run/numberOfThreads 4
-
-# Setups geometry
 /HUS/Geometry/Target/SetTargetMaterial B10
-/HUS/Geometry/Target/SetBaseMaterial Al
-/HUS/Geometry/Target/SetTargetXYDim 1. cm
-/HUS/Geometry/Target/SetTargetZThick 200. nm 
-/HUS/Geometry/Target/SetTargetAngle 60. deg
-/HUS/Geometry/Target/SetBaseXYDim 1. cm
-/HUS/Geometry/Target/SetBaseZThick 150. nm
+/HUS/Geometry/Target/SetBaseMaterial   C3H6O2
+/HUS/Geometry/Target/SetTargetXYDim    1. cm
+/HUS/Geometry/Target/SetTargetZThick   286. nm 
+/HUS/Geometry/Target/SetTargetAngle    90. deg
+/HUS/Geometry/Target/SetBaseXYDim      1. cm
+/HUS/Geometry/Target/SetBaseZThick     36.70 nm
+/HUS/Geometry/Detector/SetDet0Angle    40. deg
+/HUS/Geometry/Detector/SetDet1Angle    70. deg
+/HUS/Geometry/Detector/SetDet2Angle    150. deg
+/HUS/Geometry/Detector/SetDet3Angle    233. deg
+/HUS/Geometry/Detector/SetDet4Angle    270 deg
+/HUS/Geometry/Detector/SetDet5Angle    330. deg
 
-/HUS/Geometry/Detector/SetDet0Angle  40. deg
-/HUS/Geometry/Detector/SetDet1Angle  70. deg
-/HUS/Geometry/Detector/SetDet2Angle  150. deg
-/HUS/Geometry/Detector/SetDet3Angle  233. deg
-/HUS/Geometry/Detector/SetDet4Angle  270 deg
-/HUS/Geometry/Detector/SetDet5Angle  330. deg
+# Setups proton beam
+#
+/HUS/Beam/SetBeamEnergy 1.0 MeV
+#/HUS/Beam/Radius        0.05 mm
+#/HUS/Beam/xPos          0. mm
+#/HUS/Beam/yPos          0. mm
+#/HUS/Beam/zPos          -5 mm
+#/HUS/Beam/MinSolidAngle 0. deg
+#/HUS/Beam/MaxSolidAngle 0.01 deg
+#/HUS/Beam/ThetaRotation 0. deg
+#/HUS/Beam/PhiRotation   37. deg
 
 # Set file name
-#/output/FileName output.root
+#
+/output/FileName output.root
 
 # Initialize kernel
+#
 /run/geometryModified
 /run/initialize
 
