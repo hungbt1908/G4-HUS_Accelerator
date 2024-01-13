@@ -490,7 +490,7 @@ void PhysicsList::ConstructProcess()
 
         // Scaling the nucleon cross sections
         G4HadronicParameters::Instance()->SetApplyFactorXS(true);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(1.50);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(1.50);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(2.0);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(2.0);
     }
 }
