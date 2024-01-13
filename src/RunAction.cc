@@ -1,7 +1,9 @@
 #include "RunAction.hh"
 #include "RunActionMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "PrimaryGeneratorAction.hh"
 
+#include "G4ParticleGun.hh"
 #include "G4AnalysisManager.hh"
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -68,27 +70,9 @@ RunAction::~RunAction()
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     // get time
-    time_t now = time(NULL);
-    struct std::tm* beginTime = localtime(&now);
-
+    time_t beginnow = time(NULL);
+    beginTime = localtime(&beginnow);
     begin = clock();
-
-    // open text file to write run information
-    geant4OutputName.open("Geant4.out", std::ios::out);
-
-    geant4OutputName << "                              ==> GEANT4 OUTPUT REPORT <==                            " << "\n";
-    geant4OutputName << "  __________________________________ [ Job Title ] _________________________________  " << "\n";
-    geant4OutputName << " |                                                                                  | " << "\n";
-    geant4OutputName << " | Application for simulating Accelerator at HUS                                    | " << "\n";
-    geant4OutputName << " | -------------------------------------------------------------------------------- | " << "\n";
-    geant4OutputName << " | author: BUI Tien Hung                                                            | " << "\n";
-    geant4OutputName << " | email : hungbt1908@gmail.com                                                     | " << "\n";
-    geant4OutputName << " | adress: Institute for Nuclear Science and Technology (INST)                      | " << "\n";
-    geant4OutputName << " |__________________________________________________________________________________| " << "\n";
-    geant4OutputName << "                                                                                      " << "\n";
-    geant4OutputName << "                         Starting = " << asctime(beginTime);
-    geant4OutputName.close();
-    
 
   //inform the runManager to save random number seed
   //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
@@ -108,10 +92,10 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 
 void RunAction::EndOfRunAction(const G4Run* run)
 {
-    end = clock();
     // get time
-    time_t now = time(0);
-    struct std::tm* endTime = localtime(&now);
+    time_t endnow = time(0);
+    endTime = localtime(&endnow);
+    end = clock();
 
     // get the number of threads used
     int numberOfWorkerThreads = G4Threading::GetNumberOfRunningWorkerThreads();
@@ -121,38 +105,59 @@ void RunAction::EndOfRunAction(const G4Run* run)
     int totalEvents = runManager->GetNumberOfEventsToBeProcessed();
     G4int nofEvents = run->GetNumberOfEvent();
 
+    // get user detector
     const auto detConstruction = static_cast<const DetectorConstruction*>(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+    
+    // get primary generator
+    const auto generatorAction = static_cast<const PrimaryGeneratorAction*>(G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
+    const G4ParticleGun* particleGun = generatorAction->GetParticleGun();
+    // G4String particleName = particleGun->GetParticleDefinition()->GetParticleName();
+    const G4double particleEnergy = generatorAction->GetGunEnergy();
+    // G4cout << particleEnergy << G4endl;
 
     // open text file to write run information
     if (IsMaster())
     {
-        geant4OutputName.open("Geant4.out", ios::app);
-        geant4OutputName << "                         Ending   = " << asctime(endTime);
-        geant4OutputName << "                                                                                      " << "\n";
-        geant4OutputName << " >>>> Geometry Report                                                            <<<< " << "\n";
-        geant4OutputName << "   + Target: " << "MatName = "    << detConstruction->logicTarget->GetMaterial()->GetName()                        << "; "
+        // open text file to write run information
+        std::ofstream file("Geant4_out.txt");
+        //geant4OutputName.open("Geant4.out", std::ios::out);
+
+        file << "                              ==> GEANT4 OUTPUT REPORT <==                            " << "\n";
+        file << "  __________________________________ [ Job Title ] _________________________________  " << "\n";
+        file << " |                                                                                  | " << "\n";
+        file << " | Application for simulating Accelerator at HUS                                    | " << "\n";
+        file << " | -------------------------------------------------------------------------------- | " << "\n";
+        file << " | author: BUI Tien Hung                                                            | " << "\n";
+        file << " | email : hungbt1908@gmail.com                                                     | " << "\n";
+        file << " | adress: Institute for Nuclear Science and Technology (INST)                      | " << "\n";
+        file << " |__________________________________________________________________________________| " << "\n";
+        file << "                                                                                      " << "\n";
+        file << "                         Starting = " << asctime(beginTime);
+        file << "                         Ending   = " << asctime(endTime);
+        file << "                                                                                      " << "\n";
+        file << " >>>> Geometry Report                                                            <<<< " << "\n";
+        file << "   + Target: " << "MatName = "    << detConstruction->logicTarget->GetMaterial()->GetName()                        << "; "
                                             << "Density = "    << detConstruction->logicTarget->GetMaterial()->GetDensity()/(g/cm3) << " g/cm3" << "; "
                                             << "Components = " << detConstruction->logicTarget->GetMaterial()->GetNumberOfElements()            << "; "
                          << "\n";
-        geant4OutputName << "   + Baselayer: " << "MatName = "    << detConstruction->logicBackLayer->GetMaterial()->GetName()                        << "; "
+        file << "   + Baselayer: " << "MatName = "    << detConstruction->logicBackLayer->GetMaterial()->GetName()                        << "; "
                                                << "Density = "    << detConstruction->logicBackLayer->GetMaterial()->GetDensity()/(g/cm3) << " g/cm3" << "; "
                                                << "Components = " << detConstruction->logicBackLayer->GetMaterial()->GetNumberOfElements()            << "; "
 
-                         << "\n";
-        geant4OutputName << "                                                                                      " << "\n";
+             << "\n";
+        file << "                                                                                      " << "\n";
 
-        geant4OutputName << " >>>> Physics Report                                                             <<<< " << "\n";
-        geant4OutputName << "                                                                                      " << "\n";
+        file << " >>>> Physics Report                                                             <<<< " << G4endl;
 
-        geant4OutputName << " >>>> Source Report                                                              <<<< " << "\n";
-        geant4OutputName << "                                                                                      " << "\n";
+        file << " >>>> Source Report                                                              <<<< " << G4endl; 
+        // file << particleEnergy << G4endl;
 
-        geant4OutputName << " >>>> Simulation Report                                                          <<<< " << "\n";
-        geant4OutputName << "  + number of worker threads: " << numberOfWorkerThreads << " threads" << "\n";
-        geant4OutputName << "  + beam on                 : " << totalEvents << " events" << "\n";
-        geant4OutputName << "  + total events            : " << nofEvents   << " events" << "\n";
-        geant4OutputName << "  + elapsed time            : " << (double(diffclock(end, begin)/1000)) << " seconds    " << "\n";
-        geant4OutputName.close();
+        file << " >>>> Simulation Report                                                          <<<< " << "\n";
+        file << "  + number of worker threads: " << numberOfWorkerThreads << " threads" << "\n";
+        file << "  + beam on                 : " << totalEvents << " events" << "\n";
+        file << "  + total events            : " << nofEvents   << " events" << "\n";
+        file << "  + elapsed time            : " << (double(diffclock(end, begin)/1000)) << " seconds    " << G4endl;
+        file.close();
     }
 
     // print histogram statistics

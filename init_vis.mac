@@ -12,18 +12,6 @@
 /HUS/Geometry/Detector/SetDet4Angle    270 deg
 /HUS/Geometry/Detector/SetDet5Angle    330. deg
 
-# Setups proton beam
-#
-/HUS/Beam/SetBeamEnergy 1.0 MeV
-#/HUS/Beam/Radius        0.05 mm
-#/HUS/Beam/xPos          0. mm
-#/HUS/Beam/yPos          0. mm
-#/HUS/Beam/zPos          -5 mm
-#/HUS/Beam/MinSolidAngle 0. deg
-#/HUS/Beam/MaxSolidAngle 0.01 deg
-#/HUS/Beam/ThetaRotation 0. deg
-#/HUS/Beam/PhiRotation   37. deg
-
 # Set file name
 #
 /output/FileName output.root
@@ -32,6 +20,18 @@
 #
 /run/geometryModified
 /run/initialize
+
+# Setups proton beam
+#
+/HUS/Beam/SetBeamEnergy         2.0 MeV
+/HUS/Beam/SetBeamRadius         0.01 mm
+/HUS/Beam/SetBeamXPos           0. mm
+/HUS/Beam/SetBeamYPos           0. mm
+/HUS/Beam/SetBeamZPos           -1. cm
+/HUS/Beam/SetMinSolidAngle      0. deg
+/HUS/Beam/SetMaxSolidAngle      0.01 deg
+/HUS/Beam/SetThetaRotationAngle 0. deg
+/HUS/Beam/SetPhiRotationAngle   90. deg
 
 #
 # Visualization setting

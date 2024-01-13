@@ -1,5 +1,5 @@
 #include "ActionInitialization.hh"
-#include "PrimaryGenerationAction.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "DetectorConstruction.hh"
 #include "RunAction.hh"
 #include "EventAction.hh"
@@ -16,7 +16,7 @@ void ActionInitialization::BuildForMaster() const
 
 void ActionInitialization::Build() const
 {
-    SetUserAction(new PrimaryGenerationAction);
+    SetUserAction(new PrimaryGeneratorAction);
     SetUserAction(new RunAction);
     auto eventAction = new EventAction;
     SetUserAction(eventAction);
