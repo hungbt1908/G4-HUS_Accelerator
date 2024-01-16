@@ -70,9 +70,10 @@ RunAction::~RunAction()
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     // get time
-    time_t beginnow = time(NULL);
-    beginTime = localtime(&beginnow);
+    time_t beginnow = time(0);
+    beginTime = asctime(localtime(&beginnow));
     begin = clock();
+    //G4cout << "Begin: " << beginTime << G4endl;
 
   //inform the runManager to save random number seed
   //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
@@ -94,8 +95,9 @@ void RunAction::EndOfRunAction(const G4Run* run)
 {
     // get time
     time_t endnow = time(0);
-    endTime = localtime(&endnow);
+    endTime = asctime(localtime(&endnow));
     end = clock();
+    //G4cout << "Finish: " << endTime << G4endl;
 
     // get the number of threads used
     int numberOfWorkerThreads = G4Threading::GetNumberOfRunningWorkerThreads();
@@ -132,8 +134,8 @@ void RunAction::EndOfRunAction(const G4Run* run)
         file << " | adress: Institute for Nuclear Science and Technology (INST)                      | " << "\n";
         file << " |__________________________________________________________________________________| " << "\n";
         file << "                                                                                      " << "\n";
-        file << "                         Starting = " << asctime(beginTime);
-        file << "                         Ending   = " << asctime(endTime);
+        file << "                         Starting = " << beginTime;
+        file << "                         Ending   = " << endTime;
         file << "                                                                                      " << "\n";
         file << " >>>> Geometry Report                                                            <<<< " << "\n";
         file << "   + Target: " << "MatName = "    << detConstruction->logicTarget->GetMaterial()->GetName()                        << "; "

@@ -25,8 +25,9 @@ class RunAction : public G4UserRunAction
   private:
     G4String fFileName;
     ofstream geant4OutputName;
-    struct std::tm* beginTime;
-    struct std::tm* endTime;
+    //struct std::tm* beginTime;
+    //struct std::tm* endTime;
+    G4String beginTime, endTime;
     clock_t begin;
     clock_t end;
     double diffclock(clock_t clock1, clock_t clock2);
