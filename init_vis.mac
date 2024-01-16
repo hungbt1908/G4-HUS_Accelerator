@@ -12,6 +12,11 @@
 /HUS/Geometry/Detector/SetDet4Angle    270 deg
 /HUS/Geometry/Detector/SetDet5Angle    330. deg
 
+# Set physics
+#
+/HUS/Physics/SetElasticScaleFactor 1000.
+/HUS/Physics/SetInelasticScaleFactor 1000.
+
 # Set file name
 #
 /output/FileName output.root

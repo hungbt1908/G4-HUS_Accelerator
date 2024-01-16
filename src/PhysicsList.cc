@@ -1,4 +1,5 @@
 #include "PhysicsList.hh"
+#include "PhysicsListMessenger.hh"
 
 #include "G4PhysicsListHelper.hh"
 #include "G4ProcessManager.hh"
@@ -112,10 +113,14 @@
 
 PhysicsList::PhysicsList()
   : G4VUserPhysicsList()
-{}
+{
+    fPhysicsListMessenger = new PhysicsListMessenger(this);
+}
 
 PhysicsList::~PhysicsList()
-{}
+{
+    delete fPhysicsListMessenger;
+}
 
 void PhysicsList::ConstructParticle()
 {
@@ -489,8 +494,11 @@ void PhysicsList::ConstructProcess()
         }
 
         // Scaling the nucleon cross sections
+        // G4cout << "Elastic Scale Factor: " << elasticScaleFactor << G4endl;
+        // G4cout << "Inelastic Scale Factor: " << inelasticScaleFactor << G4endl;
+
         G4HadronicParameters::Instance()->SetApplyFactorXS(true);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(2.0);
-        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(2.0);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonElastic(elasticScaleFactor);
+        G4HadronicParameters::Instance()->SetXSFactorNucleonInelastic(inelasticScaleFactor);
     }
 }

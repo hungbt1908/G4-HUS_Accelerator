@@ -6,16 +6,24 @@
 #include "G4SystemOfUnits.hh"
 
 class G4VPhysicsConstructor;
+class PhysicsListMessenger;
 
 class PhysicsList: public G4VUserPhysicsList
 {
 public:
+    PhysicsList();
+    virtual ~PhysicsList();
+    virtual void ConstructParticle();
+    virtual void ConstructProcess();
 
-  PhysicsList();
-  virtual ~PhysicsList();
+private:
+    PhysicsListMessenger* fPhysicsListMessenger;
+    G4double elasticScaleFactor;
+    G4double inelasticScaleFactor;
 
-  virtual void ConstructParticle();
-  virtual void ConstructProcess();
+public:
+    inline void SetElasticScaleFactor(G4double val) {elasticScaleFactor = val;}
+    inline void SetInelasticScaleFactor(G4double val) {inelasticScaleFactor = val;}
 };
 #endif
 
