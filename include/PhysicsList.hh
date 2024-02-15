@@ -18,6 +18,8 @@ public:
 
 private:
     PhysicsListMessenger* fPhysicsListMessenger;
+
+public:
     G4double elasticScaleFactor;
     G4double inelasticScaleFactor;
 
