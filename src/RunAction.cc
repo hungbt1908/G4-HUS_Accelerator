@@ -143,8 +143,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
       G4cout << " # Geometry setups:                                                                   " << G4endl;
       G4cout << "   Target MatName         : " << detConstruction->logicTarget->GetMaterial()->GetName() << G4endl;
       G4cout << "   Base Layer MatName     : " << detConstruction->logicBackLayer->GetMaterial()->GetName()<< G4endl;
-      G4cout << "   Target Angle           :
-       "
+      G4cout << "   Target Angle:                                                                      " << G4endl;
       G4cout << "   Detectors:                                                                         " << G4endl;
       G4cout << " # Physics setups:                                                                    " << G4endl;
       G4cout << "   Elastic Scale Factor   : " << physicsList->elasticScaleFactor                        << G4endl; 
@@ -154,7 +153,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
       G4cout << " # Number of worker threads        : " << numberOfWorkerThreads << " threads"           << G4endl;
       G4cout << " # Number of primary events        : " << nofEvents             << " events"            << G4endl;
       G4cout << " # Number of total events (scaled) : " << 500*nofEvents         << " events"            << G4endl;
-      G4cout << " # Elapsed time " << (double(diffclock(end, begin)/1000)) << " s"                       << G4endl;
+      G4cout << " # Elapsed time                    : " << (double(diffclock(end, begin)/1000)) <<  " s" << G4endl;
       G4cout << "                                                                                      " << G4endl;
       G4cout << "                                                                                      " << G4endl;
     }
