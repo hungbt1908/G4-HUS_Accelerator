@@ -15,8 +15,8 @@
 
 # Set physics
 #
-/HUS/Physics/SetElasticScaleFactor 1000.
-/HUS/Physics/SetInelasticScaleFactor 1000.
+/HUS/Physics/SetElasticScaleFactor 2000.
+/HUS/Physics/SetInelasticScaleFactor 2000.
 
 # Set file name
 #
