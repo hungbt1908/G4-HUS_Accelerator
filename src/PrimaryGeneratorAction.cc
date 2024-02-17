@@ -9,7 +9,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
 	fPrimaryGeneratorActionMessenger = new PrimaryGeneratorActionMessenger(this);
 	particleGun = new G4ParticleGun();
-	particleGun->SetNumberOfParticles(500);
+	particleGun->SetNumberOfParticles(250);
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
