@@ -22,6 +22,10 @@
 #
 /output/FileName output.root
 
+# Change the default number of workers (in multi-threading mode) 
+#
+/run/numberOfThreads 4
+
 # Initialize kernel
 #
 /run/geometryModified
