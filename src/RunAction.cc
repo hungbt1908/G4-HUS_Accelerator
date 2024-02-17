@@ -122,6 +122,12 @@ void RunAction::EndOfRunAction(const G4Run* run)
     const G4double particleEnergy = generatorAction->GetGunEnergy();
     // G4cout << particleEnergy << G4endl;
 
+    // save histograms & ntuple
+    //
+    auto analysisManager = G4AnalysisManager::Instance();
+    analysisManager->Write();
+    analysisManager->CloseFile();
+
     // Print
     if(IsMaster())
     {
@@ -152,22 +158,13 @@ void RunAction::EndOfRunAction(const G4Run* run)
       G4cout << " ------------------------------------------------------------------------------------ " << G4endl;
       G4cout << " # Number of worker threads        : " << numberOfWorkerThreads << " threads"           << G4endl;
       G4cout << " # Number of primary events        : " << nofEvents             << " events"            << G4endl;
-      G4cout << " # Number of total events (scaled) : " << 500*nofEvents         << " events"            << G4endl;
+      G4cout << " # Number of total events (scaled) : " << 250*nofEvents         << " events"            << G4endl;
       G4cout << " # Elapsed time                    : " << (double(diffclock(end, begin)/1000)) <<  " s" << G4endl;
       G4cout << "                                                                                      " << G4endl;
       G4cout << "                                                                                      " << G4endl;
     }
     else
     {}
-
-    // print histogram statistics
-    //
-    auto analysisManager = G4AnalysisManager::Instance();
-
-    // save histograms & ntuple
-    //
-    analysisManager->Write();
-    analysisManager->CloseFile();
 }
 
 void RunAction::SetFilename(G4String fileName) 
