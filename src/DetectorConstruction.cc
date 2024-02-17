@@ -64,7 +64,6 @@ void DetectorConstruction::DefineAttribute()
 
 G4VPhysicalVolume* DetectorConstruction::ConstructVolume()
 {
-
 	// world volume
 	G4Box* solidworld =  new G4Box("solidworld", 500.*cm, 500.*cm, 500.*cm);
 	logicWorld =  new G4LogicalVolume(solidworld, Vacuum, "logicWorld");
