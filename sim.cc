@@ -1,5 +1,6 @@
 #include <iostream>
 #include "G4RunManager.hh"
+#include "G4MTRunManager.hh"
 #include "G4RunManagerFactory.hh"
 #include "G4UImanager.hh"
 #include "G4VisManager.hh"
@@ -20,9 +21,10 @@ int main(int argc, char** argv)
 	G4Random::setTheSeed(seed);
 
 	//construct the default run manager
-	G4MTRunManager* runManager = new G4MTRunManager;
-	G4int nThreads = G4Threading::G4GetNumberOfCores();
-	runManager->SetNumberOfThreads(nThreads-1);
+	// G4MTRunManager* runManager = new G4MTRunManager;
+	// G4int nThreads = G4Threading::G4GetNumberOfCores();
+	// runManager->SetNumberOfThreads(nThreads-1);
+	auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
 	auto detConstruction = new DetectorConstruction();
 	runManager->SetUserInitialization(detConstruction);
